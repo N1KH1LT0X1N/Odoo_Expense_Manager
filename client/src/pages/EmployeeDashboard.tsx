@@ -83,13 +83,13 @@ export function EmployeeDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-slate-950">
+      <nav className="bg-slate-900 shadow-sm border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
-            <h1 className="text-xl font-bold text-gray-900">Expense Management</h1>
+            <h1 className="text-xl font-bold text-white">Expense Management</h1>
             <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">Welcome, {user?.name}</span>
+              <span className="text-sm text-slate-300">Welcome, {user?.name}</span>
               <Button variant="outline" onClick={logout}>Logout</Button>
             </div>
           </div>
@@ -98,7 +98,7 @@ export function EmployeeDashboard() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">My Expenses</h2>
+          <h2 className="text-2xl font-bold text-white">My Expenses</h2>
           <Button onClick={() => setShowForm(!showForm)}>
             {showForm ? "Cancel" : "Submit New Expense"}
           </Button>

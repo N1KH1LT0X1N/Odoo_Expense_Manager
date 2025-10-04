@@ -179,14 +179,14 @@ export function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-slate-950">
+      <nav className="bg-slate-900 shadow-sm border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
-            <h1 className="text-xl font-bold text-gray-900">Expense Management - Admin Panel</h1>
+            <h1 className="text-xl font-bold text-white">Expense Management - Admin Panel</h1>
             <div className="flex items-center gap-4">
-              <Badge className="bg-purple-100 text-purple-800">{user?.role}</Badge>
-              <span className="text-sm text-gray-600">{user?.name}</span>
+              <Badge className="bg-purple-600 text-white">{user?.role}</Badge>
+              <span className="text-sm text-slate-300">{user?.name}</span>
               <Button variant="outline" onClick={logout}>Logout</Button>
             </div>
           </div>
@@ -267,7 +267,7 @@ export function AdminDashboard() {
 
           <TabsContent value="users" className="mt-6">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Users</h2>
+              <h2 className="text-2xl font-bold text-white">Users</h2>
               <Button onClick={() => setShowUserForm(!showUserForm)}>
                 {showUserForm ? "Cancel" : "Add New User"}
               </Button>
@@ -377,7 +377,7 @@ export function AdminDashboard() {
 
           <TabsContent value="flows" className="mt-6">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Approval Flows</h2>
+              <h2 className="text-2xl font-bold text-white">Approval Flows</h2>
               <Button onClick={() => setShowFlowForm(!showFlowForm)}>
                 {showFlowForm ? "Cancel" : "Add Approval Flow"}
               </Button>
