@@ -44,6 +44,34 @@ router.get("/", async (req: AuthRequest, res) => {
   }
 });
 
+router.patch("/:id", async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    const { stepOrder, requiredRole, amountThreshold } = req.body;
+
+    const [updatedFlow] = await db.update(approvalFlows)
+      .set({
+        stepOrder: stepOrder !== undefined ? stepOrder : undefined,
+        requiredRole: requiredRole || undefined,
+        amountThreshold: amountThreshold !== undefined ? amountThreshold?.toString() : undefined,
+      })
+      .where(and(
+        eq(approvalFlows.id, id),
+        eq(approvalFlows.companyId, req.user!.companyId)
+      ))
+      .returning();
+
+    if (!updatedFlow) {
+      return res.status(404).json({ message: "Approval flow not found" });
+    }
+
+    res.json({ flow: updatedFlow });
+  } catch (error) {
+    console.error("Update approval flow error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 router.delete("/:id", async (req: AuthRequest, res) => {
   try {
     const { id } = req.params;
