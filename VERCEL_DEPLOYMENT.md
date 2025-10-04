@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- Node.js 18.x (specified in `.nvmrc` and `package.json`)
+- Node.js 22.x (specified in `.nvmrc` and `package.json`)
 - PostgreSQL database (Neon)
 - Vercel account
 

@@ -5,7 +5,7 @@
 - [x] ✅ Build compiles successfully (`npm run build`)
 - [x] ✅ HTML has proper UTF-8 charset meta tags
 - [x] ✅ `vercel.json` configured with proper routes
-- [x] ✅ Node.js 18.x specified in `.nvmrc` and `package.json`
+- [x] ✅ Node.js 22.x specified in `.nvmrc` and `package.json`
 - [x] ✅ API serverless function created at `api/index.ts`
 - [x] ✅ Environment variables documented
 - [x] ✅ Health check endpoint added (`/api/health`)
@@ -15,16 +15,16 @@
 ## Files Created/Modified
 
 ### New Files:
-1. `vercel.json` - Vercel configuration (Node.js 18.x)
+1. `vercel.json` - Vercel configuration (Node.js 22.x)
 2. `api/index.ts` - Serverless API handler
 3. `.vercelignore` - Files to exclude from deployment
-4. `.nvmrc` - Node.js version specification (18)
+4. `.nvmrc` - Node.js version specification (22)
 5. `VERCEL_DEPLOYMENT.md` - Deployment guide
 
 ### Modified Files:
 1. `client/index.html` - Added UTF-8 meta tags and title
 2. `vite.config.ts` - Added production build optimizations
-3. `package.json` - Added `vercel-build` script and Node.js 18.x engine
+3. `package.json` - Added `vercel-build` script and Node.js 22.x engine
 4. `server/routes.ts` - Added health check endpoint
 
 ## Deployment Steps

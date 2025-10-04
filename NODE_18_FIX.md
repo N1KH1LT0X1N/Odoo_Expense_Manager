@@ -1,16 +1,16 @@
-# 🚀 Vercel Deployment - Node.js 18.x Fix
+# 🚀 Vercel Deployment - Node.js 22.x Configuration
 
-## ✅ Issue Fixed: Node.js Version Compatibility
+## ✅ Issue Fixed: Node.js Version Configuration
 
-**Error:** `Found invalid Node.js Version: "22.x". Please set Node.js Version to 18.x`
+**Latest Update:** Node.js 18.x is discontinued. Vercel now requires Node.js 22.x.
 
 **Solution Applied:**
 
 ### 1. Created `.nvmrc` file
 ```
-18
+22
 ```
-This tells Vercel to use Node.js 18.x
+This tells Vercel to use Node.js 22.x
 
 ### 2. Updated `vercel.json`
 Added build environment configuration:
@@ -18,7 +18,7 @@ Added build environment configuration:
 {
   "build": {
     "env": {
-      "NODE_VERSION": "18.x"
+      "NODE_VERSION": "22.x"
     }
   }
 }
@@ -29,7 +29,7 @@ Added engines field:
 ```json
 {
   "engines": {
-    "node": "18.x",
+    "node": "22.x",
     "npm": ">=9.0.0"
   }
 }
