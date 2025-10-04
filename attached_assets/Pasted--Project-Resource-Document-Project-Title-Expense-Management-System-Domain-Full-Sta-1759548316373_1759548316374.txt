@@ -1,0 +1,147 @@
+# 📘 Project Resource Document
+
+**Project Title:** Expense Management System
+**Domain:** Full Stack (MERN) – Authentication & Backend
+**Prepared For:** Hackathon / Mini-Project / Production Prototype
+
+---
+
+## 1. Project Overview
+
+Companies often struggle with manual expense reimbursement processes that are time-consuming, error-prone, and lack transparency. This project will use the **MERN stack** (MongoDB, Express.js, React, Node.js) to build a system with **authentication, role-based access control, expense submissions, and multi-level approval workflows**.
+
+---
+
+## 2. Core Modules
+
+1. **Authentication & User Management (Backend + React Forms)**
+
+   * Signup/Login with JWT authentication.
+   * Password hashing with bcrypt.
+   * Auto-create company and admin at first signup.
+   * Role-based access: Admin, Manager, Employee.
+   * User management dashboard (Admin → Create/Assign roles).
+
+2. **Expense Submission (Employee Role)**
+
+   * React form for submitting expenses (amount, category, description, date, currency).
+   * OCR receipt upload (Tesseract.js in frontend or backend).
+   * Employee dashboard for viewing past submissions.
+
+3. **Approval Workflow (Manager/Admin Role)**
+
+   * Approval dashboard (React UI) listing pending expenses.
+   * Sequential multi-step approvals.
+   * Conditional rules: percentage approval / CFO override.
+   * Status updates shown to employees.
+
+4. **Admin Features**
+
+   * Manage employees, assign managers.
+   * Configure approval rules.
+   * View all company expenses.
+   * Override approvals.
+
+---
+
+## 3. Tech Stack
+
+* **Frontend:** React + TailwindCSS/Material UI
+* **Backend:** Node.js + Express.js
+* **Database:** MongoDB (Mongoose ORM)
+* **Authentication:** JWT + bcrypt
+* **OCR:** Tesseract.js (can run in browser or backend)
+* **Currency API:**
+
+  * Country & currency → `https://restcountries.com/v3.1/all?fields=name,currencies`
+  * Conversion → `https://api.exchangerate-api.com/v4/latest/{BASE_CURRENCY}`
+
+---
+
+## 4. Database Schema (MongoDB with Mongoose)
+
+* **User**: `{ _id, name, email, passwordHash, role, companyId, managerId }`
+* **Company**: `{ _id, name, currency }`
+* **Expense**: `{ _id, userId, amount, currency, category, description, date, status, approverId, approvalFlowStep }`
+* **ApprovalFlow**: `{ _id, companyId, steps: [{ order, role, ruleType }] }`
+
+---
+
+## 5. API Endpoints
+
+* **Auth**
+
+  * `POST /api/auth/signup` → Register company + admin.
+  * `POST /api/auth/login` → Authenticate user.
+* **Users**
+
+  * `POST /api/users` → Admin creates employee/manager.
+  * `PATCH /api/users/:id/role` → Update role.
+* **Expenses**
+
+  * `POST /api/expenses` → Submit expense (Employee).
+  * `GET /api/expenses/mine` → View personal history.
+  * `PATCH /api/expenses/:id/approve` → Approve/Reject (Manager/Admin).
+* **Admin**
+
+  * `GET /api/admin/expenses` → View all expenses.
+  * `POST /api/admin/approval-flow` → Configure rules.
+
+---
+
+## 6. Project Roadmap
+
+1. **Phase 1: Setup MERN Project**
+
+   * React frontend, Express backend, MongoDB database.
+   * Auth routes + JWT middleware.
+2. **Phase 2: Expense Submission**
+
+   * Employee expense form.
+   * Store & fetch expenses.
+3. **Phase 3: Approval Workflow**
+
+   * Approver dashboards.
+   * Multi-step + conditional approvals.
+4. **Phase 4: Admin Controls**
+
+   * Role management dashboard.
+   * Approval flow configuration.
+5. **Phase 5: Extra Features**
+
+   * OCR receipts with Tesseract.js.
+   * Currency conversion APIs.
+
+---
+
+## 7. Tools & Resources
+
+* **Postman** → API testing
+* **Mongoose** → MongoDB schema modeling
+* **Redux Toolkit / React Query** → State management
+* **Swagger / OpenAPI** → API documentation
+* **JWT.io** → Debugging JWTs
+* **Cloudinary / AWS S3** → Receipt storage
+
+---
+
+## 8. Deliverables
+
+* MERN-based expense management platform.
+* Authentication + RBAC implemented.
+* Expense submission & approval workflows functional.
+* Admin management features completed.
+* Documentation + Postman collection.
+
+---
+
+## 9. Future Enhancements
+
+* Payroll system integration.
+* Email/SMS notifications.
+* Expense analytics dashboard.
+* SaaS-ready multi-company support.
+
+---
+
+✅ With MERN, you’ll cover both frontend and backend while keeping everything in JavaScript/TypeScript.
