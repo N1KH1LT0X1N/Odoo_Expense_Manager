@@ -1,5 +1,11 @@
 # Vercel Deployment Guide
 
+## Requirements
+
+- Node.js 18.x (specified in `.nvmrc` and `package.json`)
+- PostgreSQL database (Neon)
+- Vercel account
+
 ## Environment Variables
 
 Add these environment variables in your Vercel dashboard:
