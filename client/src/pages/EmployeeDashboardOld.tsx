@@ -9,7 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { Badge } from "../components/ui/badge";
 import { Textarea } from "../components/ui/textarea";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../components/ui/dialog";
-import { Upload, Receipt, Plus, Eye, History } from "lucide-react";
+import { Upload, Receipt, Plus, Eye } from "lucide-react";
 
 export function EmployeeDashboard() {
   const { user, token, logout } = useAuth();
@@ -19,7 +19,6 @@ export function EmployeeDashboard() {
   const [currencies, setCurrencies] = useState<string[]>([]);
   const [selectedExpense, setSelectedExpense] = useState<any>(null);
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
-  const [approvalHistory, setApprovalHistory] = useState<any[]>([]);
   
   const [formData, setFormData] = useState({
     amount: "",
@@ -59,20 +58,6 @@ export function EmployeeDashboard() {
       }
     } catch (error) {
       console.error("Failed to fetch expenses:", error);
-    }
-  };
-
-  const fetchApprovalHistory = async (expenseId: string) => {
-    try {
-      const response = await fetch(`/api/expenses/${expenseId}/history`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setApprovalHistory(data.history);
-      }
-    } catch (error) {
-      console.error("Failed to fetch approval history:", error);
     }
   };
 
@@ -145,7 +130,7 @@ export function EmployeeDashboard() {
       approved: "bg-green-100 text-green-800",
       rejected: "bg-red-100 text-red-800",
     };
-    return <Badge className={colors[status as keyof typeof colors] || "bg-gray-100 text-gray-800"}>{status}</Badge>;
+    return <Badge className={colors[status as keyof typeof colors] || ""}>{status}</Badge>;
   };
 
   return (
@@ -256,135 +241,123 @@ export function EmployeeDashboard() {
           </Dialog>
         </div>
 
+        {showForm && (
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>Submit Expense</CardTitle>
+              <CardDescription>Fill in the details of your expense claim</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="amount">Amount</Label>
+                    <Input
+                      id="amount"
+                      type="number"
+                      step="0.01"
+                      value={formData.amount}
+                      onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="currency">Currency</Label>
+                    <Select value={formData.currency} onValueChange={(value) => setFormData({ ...formData, currency: value })}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="USD">USD</SelectItem>
+                        <SelectItem value="EUR">EUR</SelectItem>
+                        <SelectItem value="GBP">GBP</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="category">Category</Label>
+                    <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="travel">Travel</SelectItem>
+                        <SelectItem value="food">Food</SelectItem>
+                        <SelectItem value="office">Office</SelectItem>
+                        <SelectItem value="equipment">Equipment</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="date">Date</Label>
+                    <Input
+                      id="date"
+                      type="date"
+                      value={formData.date}
+                      onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
+                    id="description"
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    required
+                    rows={3}
+                  />
+                </div>
+
+                <Button type="submit" disabled={loading}>
+                  {loading ? "Submitting..." : "Submit Expense"}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        )}
+
         <Card>
           <CardHeader>
             <CardTitle>Expense History</CardTitle>
-            <CardDescription>View and manage your submitted expenses</CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Description</TableHead>
+                  <TableHead>Date</TableHead>
                   <TableHead>Category</TableHead>
+                  <TableHead>Description</TableHead>
                   <TableHead>Amount</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Receipt</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {expenses.map((expense) => (
-                  <TableRow key={expense.id}>
-                    <TableCell className="font-medium">{expense.description}</TableCell>
-                    <TableCell className="capitalize">{expense.category}</TableCell>
-                    <TableCell>${expense.amount} {expense.currency}</TableCell>
-                    <TableCell>{getStatusBadge(expense.status)}</TableCell>
-                    <TableCell>
-                      {expense.receiptUrl ? (
-                        <div className="flex items-center gap-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => window.open(`/api/expenses/receipt/${expense.receiptUrl.split('/').pop()}`, '_blank')}
-                          >
-                            <Eye className="w-4 h-4 mr-1" />
-                            View
-                          </Button>
-                        </div>
-                      ) : (
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button size="sm" variant="outline">
-                              <Upload className="w-4 h-4 mr-1" />
-                              Upload
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent>
-                            <DialogHeader>
-                              <DialogTitle>Upload Receipt</DialogTitle>
-                              <DialogDescription>
-                                Upload a receipt for this expense
-                              </DialogDescription>
-                            </DialogHeader>
-                            <div className="space-y-4">
-                              <div>
-                                <Label htmlFor="receipt">Receipt File</Label>
-                                <Input
-                                  id="receipt"
-                                  type="file"
-                                  accept="image/*,.pdf"
-                                  onChange={(e) => setReceiptFile(e.target.files?.[0] || null)}
-                                />
-                              </div>
-                              <Button 
-                                onClick={() => handleReceiptUpload(expense.id)}
-                                disabled={!receiptFile}
-                                className="w-full"
-                              >
-                                Upload Receipt
-                              </Button>
-                            </div>
-                          </DialogContent>
-                        </Dialog>
-                      )}
-                    </TableCell>
-                    <TableCell>{new Date(expense.date).toLocaleDateString()}</TableCell>
-                    <TableCell>
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => {
-                              setSelectedExpense(expense);
-                              fetchApprovalHistory(expense.id);
-                            }}
-                          >
-                            <History className="w-4 h-4 mr-1" />
-                            History
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader>
-                            <DialogTitle>Approval History</DialogTitle>
-                            <DialogDescription>
-                              Track the approval progress for this expense
-                            </DialogDescription>
-                          </DialogHeader>
-                          <div className="space-y-4">
-                            {approvalHistory.length > 0 ? (
-                              <div className="space-y-2">
-                                {approvalHistory.map((entry, index) => (
-                                  <div key={index} className="flex items-center justify-between p-3 border rounded">
-                                    <div>
-                                      <p className="font-medium">{entry.approver?.name}</p>
-                                      <p className="text-sm text-gray-500">{entry.action}</p>
-                                      {entry.comments && (
-                                        <p className="text-sm text-gray-600">{entry.comments}</p>
-                                      )}
-                                    </div>
-                                    <div className="text-right">
-                                      <p className="text-sm text-gray-500">
-                                        {new Date(entry.createdAt).toLocaleDateString()}
-                                      </p>
-                                      <Badge variant={entry.action === 'approved' ? 'default' : entry.action === 'rejected' ? 'destructive' : 'secondary'}>
-                                        {entry.action}
-                                      </Badge>
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-                            ) : (
-                              <p className="text-gray-500">No approval history available</p>
-                            )}
-                          </div>
-                        </DialogContent>
-                      </Dialog>
+                {expenses.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center text-gray-500">
+                      No expenses found
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : (
+                  expenses.map((expense) => (
+                    <TableRow key={expense.id}>
+                      <TableCell>{new Date(expense.date).toLocaleDateString()}</TableCell>
+                      <TableCell className="capitalize">{expense.category}</TableCell>
+                      <TableCell>{expense.description}</TableCell>
+                      <TableCell>{expense.currency} {parseFloat(expense.amount).toFixed(2)}</TableCell>
+                      <TableCell>{getStatusBadge(expense.status)}</TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </CardContent>

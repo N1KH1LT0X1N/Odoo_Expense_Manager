@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import { pgTable, text, varchar, timestamp, decimal, pgEnum, integer, boolean } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -47,6 +48,19 @@ export const approvalFlows = pgTable("approval_flows", {
   stepOrder: integer("step_order").notNull(),
   requiredRole: roleEnum("required_role").notNull(),
   amountThreshold: decimal("amount_threshold", { precision: 10, scale: 2 }),
+  isSequential: boolean("is_sequential").notNull().default(true),
+  minApprovalPercentage: integer("min_approval_percentage").default(100),
+  approverIds: text("approver_ids"), // JSON array of user IDs
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const approvalHistory = pgTable("approval_history", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  expenseId: varchar("expense_id").notNull().references(() => expenses.id),
+  approverId: varchar("approver_id").notNull().references(() => users.id),
+  action: text("action").notNull(), // "approved", "rejected", "pending"
+  stepOrder: integer("step_order").notNull(),
+  comments: text("comments"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
@@ -90,3 +104,53 @@ export type InsertExpense = z.infer<typeof insertExpenseSchema>;
 
 export type ApprovalFlow = typeof approvalFlows.$inferSelect;
 export type InsertApprovalFlow = z.infer<typeof insertApprovalFlowSchema>;
+
+// Define relationships
+export const companiesRelations = relations(companies, ({ many }) => ({
+  users: many(users),
+  expenses: many(expenses),
+  approvalFlows: many(approvalFlows),
+}));
+
+export const usersRelations = relations(users, ({ one, many }) => ({
+  company: one(companies, {
+    fields: [users.companyId],
+    references: [companies.id],
+  }),
+  manager: one(users, {
+    fields: [users.managerId],
+    references: [users.id],
+  }),
+  employees: many(users),
+  expenses: many(expenses),
+}));
+
+export const expensesRelations = relations(expenses, ({ one, many }) => ({
+  user: one(users, {
+    fields: [expenses.userId],
+    references: [users.id],
+  }),
+  approver: one(users, {
+    fields: [expenses.approverId],
+    references: [users.id],
+  }),
+  approvalHistory: many(approvalHistory),
+}));
+
+export const approvalFlowsRelations = relations(approvalFlows, ({ one }) => ({
+  company: one(companies, {
+    fields: [approvalFlows.companyId],
+    references: [companies.id],
+  }),
+}));
+
+export const approvalHistoryRelations = relations(approvalHistory, ({ one }) => ({
+  expense: one(expenses, {
+    fields: [approvalHistory.expenseId],
+    references: [expenses.id],
+  }),
+  approver: one(users, {
+    fields: [approvalHistory.approverId],
+    references: [users.id],
+  }),
+}));

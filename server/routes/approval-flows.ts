@@ -11,7 +11,14 @@ router.use(requireRole("admin"));
 
 router.post("/", async (req: AuthRequest, res) => {
   try {
-    const { stepOrder, requiredRole, amountThreshold } = req.body;
+    const { 
+      stepOrder, 
+      requiredRole, 
+      amountThreshold, 
+      isSequential, 
+      minApprovalPercentage, 
+      approverIds 
+    } = req.body;
 
     if (!stepOrder || !requiredRole) {
       return res.status(400).json({ message: "Step order and required role are required" });
@@ -22,6 +29,9 @@ router.post("/", async (req: AuthRequest, res) => {
       stepOrder,
       requiredRole,
       amountThreshold: amountThreshold ? amountThreshold.toString() : null,
+      isSequential: isSequential !== undefined ? isSequential : true,
+      minApprovalPercentage: minApprovalPercentage || 100,
+      approverIds: approverIds ? JSON.stringify(approverIds) : null,
     }).returning();
 
     res.status(201).json({ flow });
