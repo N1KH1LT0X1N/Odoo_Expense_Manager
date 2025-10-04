@@ -37,9 +37,6 @@ router.get("/mine", async (req: AuthRequest, res) => {
   try {
     const userExpenses = await db.query.expenses.findMany({
       where: eq(expenses.userId, req.user!.id),
-      with: {
-        userId: true,
-      },
     });
 
     res.json({ expenses: userExpenses });
@@ -106,9 +103,47 @@ router.patch("/:id/approve", requireRole("admin", "manager"), async (req: AuthRe
       return res.status(403).json({ message: "Forbidden" });
     }
 
+    const { approvalFlows } = await import("@shared/schema");
+    const flows = await db.query.approvalFlows.findMany({
+      where: eq(approvalFlows.companyId, req.user!.companyId),
+    });
+
+    const currentStep = expense.approvalFlowStep || 0;
+    const nextStepFlow = flows.find(f => f.stepOrder === currentStep + 1);
+
+    if (status === "rejected") {
+      const [updatedExpense] = await db.update(expenses)
+        .set({ 
+          status: "rejected",
+          approverId: req.user!.id,
+          updatedAt: new Date(),
+        })
+        .where(eq(expenses.id, id))
+        .returning();
+
+      return res.json({ expense: updatedExpense });
+    }
+
+    if (nextStepFlow && parseFloat(expense.amount) >= parseFloat(nextStepFlow.amountThreshold || "0")) {
+      if (nextStepFlow.requiredRole !== req.user!.role && req.user!.role !== "admin") {
+        return res.status(403).json({ message: `This expense requires approval from ${nextStepFlow.requiredRole}` });
+      }
+
+      const [updatedExpense] = await db.update(expenses)
+        .set({ 
+          approvalFlowStep: currentStep + 1,
+          approverId: req.user!.id,
+          updatedAt: new Date(),
+        })
+        .where(eq(expenses.id, id))
+        .returning();
+
+      return res.json({ expense: updatedExpense, message: "Moved to next approval step" });
+    }
+
     const [updatedExpense] = await db.update(expenses)
       .set({ 
-        status,
+        status: "approved",
         approverId: req.user!.id,
         updatedAt: new Date(),
       })

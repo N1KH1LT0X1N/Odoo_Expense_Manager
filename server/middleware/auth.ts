@@ -2,6 +2,10 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import type { User } from "@shared/schema";
 
+if (!process.env.JWT_SECRET) {
+  console.warn("WARNING: JWT_SECRET not set in environment. Using default (insecure for production)");
+}
+
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-in-production";
 
 export interface AuthRequest extends Request {
