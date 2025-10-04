@@ -19,6 +19,7 @@ export default defineConfig({
         ]
       : []),
   ],
+  base: process.env.NODE_ENV === "production" ? "/" : "/",
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),
@@ -30,6 +31,8 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    sourcemap: false,
+    minify: 'esbuild',
   },
   server: {
     fs: {

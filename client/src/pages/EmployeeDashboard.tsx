@@ -149,56 +149,78 @@ export function EmployeeDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950">
-      <nav className="bg-slate-900 shadow-sm border-b border-slate-800">
+    <div className="min-h-screen bg-white dark:bg-black relative overflow-hidden">
+      {/* Retro Grid Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
+        <div className="absolute inset-0 [transform:rotateX(65deg)]">
+          <div className="animate-grid [background-image:linear-gradient(to_right,#9333ea_1px,transparent_0),linear-gradient(to_bottom,#9333ea_1px,transparent_0)] [background-repeat:repeat] [background-size:50px_50px] [height:300vh] [inset:0%_0px] [margin-left:-200%] [transform-origin:100%_0_0] [width:600vw]" />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-white to-transparent to-90% dark:from-black" />
+      </div>
+      
+      <nav className="relative z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-sm border-b border-gray-200 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
-            <h1 className="text-xl font-bold text-white">Expense Management</h1>
+            <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-500">
+              Expense Management
+            </h1>
             <div className="flex items-center gap-4">
-              <span className="text-sm text-slate-300">Welcome, {user?.name}</span>
-              <Button variant="outline" onClick={logout}>Logout</Button>
+              <span className="text-sm text-gray-700 dark:text-gray-300">Welcome, {user?.name}</span>
+              <span className="relative inline-block overflow-hidden rounded-lg p-[1px]">
+                <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
+                <Button 
+                  onClick={logout}
+                  className="relative bg-white dark:bg-gray-900 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800"
+                >
+                  Logout
+                </Button>
+              </span>
             </div>
           </div>
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-white">My Expenses</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">My Expenses</h2>
           <Dialog open={showForm} onOpenChange={setShowForm}>
             <DialogTrigger asChild>
-              <Button>
-                <Plus className="w-4 h-4 mr-2" />
-                Submit New Expense
-              </Button>
+              <span className="relative inline-block overflow-hidden rounded-lg p-[1px]">
+                <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
+                <Button className="relative bg-gradient-to-tr from-zinc-300/20 via-purple-400/30 to-transparent dark:from-zinc-300/5 dark:via-purple-400/20 text-gray-900 dark:text-white border-0">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Submit New Expense
+                </Button>
+              </span>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[425px] bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800">
               <DialogHeader>
-                <DialogTitle>Submit New Expense</DialogTitle>
-                <DialogDescription>
+                <DialogTitle className="text-gray-900 dark:text-white">Submit New Expense</DialogTitle>
+                <DialogDescription className="text-gray-600 dark:text-gray-400">
                   Fill out the form below to submit a new expense
                 </DialogDescription>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="amount">Amount</Label>
+                    <Label htmlFor="amount" className="text-gray-700 dark:text-gray-300">Amount</Label>
                     <Input
                       id="amount"
                       type="number"
                       step="0.01"
                       value={formData.amount}
                       onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                      className="bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white"
                       required
                     />
                   </div>
                   <div>
-                    <Label htmlFor="currency">Currency</Label>
+                    <Label htmlFor="currency" className="text-gray-700 dark:text-gray-300">Currency</Label>
                     <Select
                       value={formData.currency}
                       onValueChange={(value) => setFormData({ ...formData, currency: value })}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -212,12 +234,12 @@ export function EmployeeDashboard() {
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="category">Category</Label>
+                  <Label htmlFor="category" className="text-gray-700 dark:text-gray-300">Category</Label>
                   <Select
                     value={formData.category}
                     onValueChange={(value) => setFormData({ ...formData, category: value })}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -230,56 +252,65 @@ export function EmployeeDashboard() {
                   </Select>
                 </div>
                 <div>
-                  <Label htmlFor="description">Description</Label>
+                  <Label htmlFor="description" className="text-gray-700 dark:text-gray-300">Description</Label>
                   <Textarea
                     id="description"
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    className="bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white"
                     required
                   />
                 </div>
                 <div>
-                  <Label htmlFor="date">Date</Label>
+                  <Label htmlFor="date" className="text-gray-700 dark:text-gray-300">Date</Label>
                   <Input
                     id="date"
                     type="date"
                     value={formData.date}
                     onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                    className="bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white"
                     required
                   />
                 </div>
-                <Button type="submit" disabled={loading} className="w-full">
-                  {loading ? "Submitting..." : "Submit Expense"}
-                </Button>
+                <span className="relative inline-block overflow-hidden rounded-lg p-[1px] w-full">
+                  <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
+                  <Button 
+                    type="submit" 
+                    disabled={loading} 
+                    className="relative w-full bg-gradient-to-tr from-zinc-300/20 via-purple-400/30 to-transparent dark:from-zinc-300/5 dark:via-purple-400/20 text-gray-900 dark:text-white border-0"
+                  >
+                    {loading ? "Submitting..." : "Submit Expense"}
+                  </Button>
+                </span>
               </form>
             </DialogContent>
           </Dialog>
         </div>
 
-        <Card>
+        <Card className="border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl">
           <CardHeader>
-            <CardTitle>Expense History</CardTitle>
-            <CardDescription>View and manage your submitted expenses</CardDescription>
+            <CardTitle className="text-gray-900 dark:text-white">Expense History</CardTitle>
+            <CardDescription className="text-gray-600 dark:text-gray-400">View and manage your submitted expenses</CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead>Description</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Receipt</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Actions</TableHead>
+                <TableRow className="border-gray-200 dark:border-gray-800">
+                  <TableHead className="text-gray-700 dark:text-gray-300">Description</TableHead>
+                  <TableHead className="text-gray-700 dark:text-gray-300">Category</TableHead>
+                  <TableHead className="text-gray-700 dark:text-gray-300">Amount</TableHead>
+                  <TableHead className="text-gray-700 dark:text-gray-300">Status</TableHead>
+                  <TableHead className="text-gray-700 dark:text-gray-300">Receipt</TableHead>
+                  <TableHead className="text-gray-700 dark:text-gray-300">Date</TableHead>
+                  <TableHead className="text-gray-700 dark:text-gray-300">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {expenses.map((expense) => (
-                  <TableRow key={expense.id}>
-                    <TableCell className="font-medium">{expense.description}</TableCell>
-                    <TableCell className="capitalize">{expense.category}</TableCell>
-                    <TableCell>${expense.amount} {expense.currency}</TableCell>
+                  <TableRow key={expense.id} className="border-gray-200 dark:border-gray-800">
+                    <TableCell className="font-medium text-gray-900 dark:text-white">{expense.description}</TableCell>
+                    <TableCell className="capitalize text-gray-700 dark:text-gray-300">{expense.category}</TableCell>
+                    <TableCell className="text-gray-900 dark:text-white font-medium">${expense.amount} {expense.currency}</TableCell>
                     <TableCell>{getStatusBadge(expense.status)}</TableCell>
                     <TableCell>
                       {expense.receiptUrl ? (
@@ -288,6 +319,7 @@ export function EmployeeDashboard() {
                             size="sm"
                             variant="outline"
                             onClick={() => window.open(`/api/expenses/receipt/${expense.receiptUrl.split('/').pop()}`, '_blank')}
+                            className="border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300"
                           >
                             <Eye className="w-4 h-4 mr-1" />
                             View
@@ -296,41 +328,49 @@ export function EmployeeDashboard() {
                       ) : (
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button size="sm" variant="outline">
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              className="border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300"
+                            >
                               <Upload className="w-4 h-4 mr-1" />
                               Upload
                             </Button>
                           </DialogTrigger>
-                          <DialogContent>
+                          <DialogContent className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800">
                             <DialogHeader>
-                              <DialogTitle>Upload Receipt</DialogTitle>
-                              <DialogDescription>
+                              <DialogTitle className="text-gray-900 dark:text-white">Upload Receipt</DialogTitle>
+                              <DialogDescription className="text-gray-600 dark:text-gray-400">
                                 Upload a receipt for this expense
                               </DialogDescription>
                             </DialogHeader>
                             <div className="space-y-4">
                               <div>
-                                <Label htmlFor="receipt">Receipt File</Label>
+                                <Label htmlFor="receipt" className="text-gray-700 dark:text-gray-300">Receipt File</Label>
                                 <Input
                                   id="receipt"
                                   type="file"
                                   accept="image/*,.pdf"
                                   onChange={(e) => setReceiptFile(e.target.files?.[0] || null)}
+                                  className="bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white"
                                 />
                               </div>
-                              <Button 
-                                onClick={() => handleReceiptUpload(expense.id)}
-                                disabled={!receiptFile}
-                                className="w-full"
-                              >
-                                Upload Receipt
-                              </Button>
+                              <span className="relative inline-block overflow-hidden rounded-lg p-[1px] w-full">
+                                <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
+                                <Button 
+                                  onClick={() => handleReceiptUpload(expense.id)}
+                                  disabled={!receiptFile}
+                                  className="relative w-full bg-gradient-to-tr from-zinc-300/20 via-purple-400/30 to-transparent dark:from-zinc-300/5 dark:via-purple-400/20 text-gray-900 dark:text-white border-0"
+                                >
+                                  Upload Receipt
+                                </Button>
+                              </span>
                             </div>
                           </DialogContent>
                         </Dialog>
                       )}
                     </TableCell>
-                    <TableCell>{new Date(expense.date).toLocaleDateString()}</TableCell>
+                    <TableCell className="text-gray-700 dark:text-gray-300">{new Date(expense.date).toLocaleDateString()}</TableCell>
                     <TableCell>
                       <Dialog>
                         <DialogTrigger asChild>
@@ -341,15 +381,16 @@ export function EmployeeDashboard() {
                               setSelectedExpense(expense);
                               fetchApprovalHistory(expense.id);
                             }}
+                            className="border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300"
                           >
                             <History className="w-4 h-4 mr-1" />
                             History
                           </Button>
                         </DialogTrigger>
-                        <DialogContent>
+                        <DialogContent className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800">
                           <DialogHeader>
-                            <DialogTitle>Approval History</DialogTitle>
-                            <DialogDescription>
+                            <DialogTitle className="text-gray-900 dark:text-white">Approval History</DialogTitle>
+                            <DialogDescription className="text-gray-600 dark:text-gray-400">
                               Track the approval progress for this expense
                             </DialogDescription>
                           </DialogHeader>
@@ -357,16 +398,16 @@ export function EmployeeDashboard() {
                             {approvalHistory.length > 0 ? (
                               <div className="space-y-2">
                                 {approvalHistory.map((entry, index) => (
-                                  <div key={index} className="flex items-center justify-between p-3 border rounded">
+                                  <div key={index} className="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-800 rounded bg-gray-50 dark:bg-gray-800/50">
                                     <div>
-                                      <p className="font-medium">{entry.approver?.name}</p>
-                                      <p className="text-sm text-gray-500">{entry.action}</p>
+                                      <p className="font-medium text-gray-900 dark:text-white">{entry.approver?.name}</p>
+                                      <p className="text-sm text-gray-500 dark:text-gray-400">{entry.action}</p>
                                       {entry.comments && (
-                                        <p className="text-sm text-gray-600">{entry.comments}</p>
+                                        <p className="text-sm text-gray-600 dark:text-gray-400">{entry.comments}</p>
                                       )}
                                     </div>
                                     <div className="text-right">
-                                      <p className="text-sm text-gray-500">
+                                      <p className="text-sm text-gray-500 dark:text-gray-400">
                                         {new Date(entry.createdAt).toLocaleDateString()}
                                       </p>
                                       <Badge variant={entry.action === 'approved' ? 'default' : entry.action === 'rejected' ? 'destructive' : 'secondary'}>
@@ -377,7 +418,7 @@ export function EmployeeDashboard() {
                                 ))}
                               </div>
                             ) : (
-                              <p className="text-gray-500">No approval history available</p>
+                              <p className="text-gray-500 dark:text-gray-400">No approval history available</p>
                             )}
                           </div>
                         </DialogContent>

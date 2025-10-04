@@ -203,6 +203,8 @@ router.patch("/:id/approve", requireRole("admin", "manager"), async (req: AuthRe
       return res.status(400).json({ message: "Status must be 'approved' or 'rejected'" });
     }
 
+    console.log(`Approval request: expenseId=${id}, approverId=${req.user!.id}, status=${status}`);
+
     const result = await approvalService.processApproval(
       id, 
       req.user!.id, 
@@ -211,8 +213,11 @@ router.patch("/:id/approve", requireRole("admin", "manager"), async (req: AuthRe
     );
 
     if (!result.success) {
+      console.error(`Approval failed: ${result.message}`);
       return res.status(400).json({ message: result.message });
     }
+
+    console.log(`Approval result:`, result);
 
     // Send appropriate notifications
     if (result.isComplete) {
@@ -236,7 +241,7 @@ router.patch("/:id/approve", requireRole("admin", "manager"), async (req: AuthRe
     });
   } catch (error) {
     console.error("Approve expense error:", error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: "Internal server error", error: error instanceof Error ? error.message : "Unknown error" });
   }
 });
 
